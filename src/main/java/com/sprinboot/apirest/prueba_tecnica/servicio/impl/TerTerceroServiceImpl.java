@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.sprinboot.apirest.prueba_tecnica.dto.TerTerceroDto;
 import com.sprinboot.apirest.prueba_tecnica.modelo.entidades.TerTercero;
+import com.sprinboot.apirest.prueba_tecnica.modelo.excepciones.TerceroNotFoundException;
 import com.sprinboot.apirest.prueba_tecnica.modelo.repositorio.TerceroRepository;
 import com.sprinboot.apirest.prueba_tecnica.servicio.TerTerceroService;
 
@@ -17,14 +18,14 @@ public class TerTerceroServiceImpl implements TerTerceroService{
 	@Override
 	public TerTerceroDto findByDocumento(String documento) {
 		TerTercero tercerodb = terceroRepository.findByTerDocumento(documento)
-				.orElseThrow();
+				.orElseThrow(() -> new TerceroNotFoundException(documento));
 		return new TerTerceroDto(tercerodb);
 	}
 
 	@Override
 	public TerTerceroDto editar(Long id, TerTerceroDto terRecibido) {
 		TerTercero tercerodb = terceroRepository.findById(id)
-				.orElseThrow();
+				.orElseThrow(() -> new TerceroNotFoundException(terRecibido.getTerDocumento()));
 		
 		tercerodb.setTerApellido(terRecibido.getTerApellido());
 		tercerodb.setTerNombre(terRecibido.getTerNombre());
